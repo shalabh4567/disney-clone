@@ -41,6 +41,7 @@ export default Details;
 const Container = styled.div`
   min-height: calc(100vh - 75px);
   padding: 0 calc(3.5vw + 5px);
+  overflow: hidden;
   position: relative;
 `;
 
@@ -64,6 +65,7 @@ const ImgTitle = styled.div`
   width: 35vw;
   min-height: 170px;
   min-width: 200px;
+  margin-top: 60px;
 
   img {
     width: 100%;
@@ -137,6 +139,7 @@ const Description = styled.div`
 line-height: 1.4;
 font-size: 20px;
 margin-top:16px;
-color: rgb(249, 249, 249)
+color: rgb(249, 249, 249);
+max-width: 760px;
 `
 
