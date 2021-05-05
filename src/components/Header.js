@@ -31,7 +31,7 @@ const Header = () => {
           <span>SERIES</span>
         </a>
       </NavMenu>
-      <UserImg src="https://images.unsplash.com/photo-1603444595152-2c267343c2da?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NDV8fHBlcnNvbnxlbnwwfDJ8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"/>
+      <UserImg src="https://images.unsplash.com/photo-1528426001684-1f1113c444c7?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTl8fHBlcnNvbiUyMGxhZHl8ZW58MHwyfDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"/>
     </Nav>
   );
 };
@@ -44,6 +44,7 @@ const Nav = styled.nav`
   display: flex;
   align-items: center;
   padding: 0 36px;
+  overflow-x: hidden;
 `;
 
 const Logo = styled.img`
