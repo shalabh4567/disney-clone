@@ -1,37 +1,52 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useParams } from "react-router-dom";
+import db from "../firebase";
 
 const Details = () => {
+  const { id } = useParams();
+  const [movie, setMovie] = useState();
+  useEffect(() => {
+    db.collection("movies")
+      .doc(id)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          setMovie(doc.data());
+        }
+      });
+  }, [id]);
+  console.log(movie);
   return (
     <Container>
-      <Background>
-        <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/4F39B7E16726ECF419DD7C49E011DD95099AA20A962B0B10AA1881A70661CE45/scale?width=1440&aspectRatio=1.78&format=jpeg" alt="backgroundimg" />
-      </Background>
-      <ImgTitle>
-        <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/D7AEE1F05D10FC37C873176AAA26F777FC1B71E7A6563F36C6B1B497CAB1CEC2/scale?width=1440&aspectRatio=1.78" alt="imgtitle" />
-      </ImgTitle>
-      <Controls>
-          <PlayButton>
-              <img src="/images/play-icon-black.png" alt="playbutton"/>
-              <spn>Play</spn>
-          </PlayButton>
-          <TrailerButton>
-          <img src="/images/play-icon-white.png" alt="trailerbutton"/>
-          <span>Trailer</span>
-          </TrailerButton>
-          <AddButton>
+      {movie && (
+        <>
+          <Background>
+            <img src={movie && movie.backgroundImg} alt="backgroundimg" />
+          </Background>
+          <ImgTitle>
+            <img src={movie && movie.titleImg} alt="imgtitle" />
+          </ImgTitle>
+          <Controls>
+            <PlayButton>
+              <img src="/images/play-icon-black.png" alt="playbutton" />
+              <span>Play</span>
+            </PlayButton>
+            <TrailerButton>
+              <img src="/images/play-icon-white.png" alt="trailerbutton" />
+              <span>Trailer</span>
+            </TrailerButton>
+            <AddButton>
               <span>+</span>
-          </AddButton>
-          <GroupWatchButton>
-              <img src="/images/group-icon.png" alt="groupwatchbutton"/>
-          </GroupWatchButton>
-      </Controls>
-      <SubTitle>
-          2018 . 7m . Family
-      </SubTitle>
-      <Description>
-          A Chinnese boy with the school bag
-      </Description>
+            </AddButton>
+            <GroupWatchButton>
+              <img src="/images/group-icon.png" alt="groupwatchbutton" />
+            </GroupWatchButton>
+          </Controls>
+          <SubTitle>{movie && movie.subTitle}</SubTitle>
+          <Description>{movie && movie.description}</Description>
+        </>
+      )}
     </Container>
   );
 };
@@ -75,71 +90,69 @@ const ImgTitle = styled.div`
 `;
 
 const Controls = styled.div`
-display: flex;
-align-items: center;
-`
+  display: flex;
+  align-items: center;
+`;
 
 const PlayButton = styled.button`
-border-radius: 4px;
-font-size: 15px;
-display: flex;
-align-items: center;
-padding: 0 24px;
-margin-right: 22px;
-height: 56px;
-background: rgb(249, 249, 249);
-border: none;
-letter-spacing: 1.8px;
-cursor: pointer;
-text-transform: uppercase;
+  border-radius: 4px;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  margin-right: 22px;
+  height: 56px;
+  background: rgb(249, 249, 249);
+  border: none;
+  letter-spacing: 1.8px;
+  cursor: pointer;
+  text-transform: uppercase;
 
-
-&:hover{
+  &:hover {
     background: rgb(198, 198, 198);
-}
-`
+  }
+`;
 
 const TrailerButton = styled(PlayButton)`
-background: rgba(0, 0, 0, 0.3);
-border: 1px solid rgb(249, 249, 249);
-color: rgb(249, 249, 249);
-`
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgb(249, 249, 249);
+  color: rgb(249, 249, 249);
+`;
 
 const AddButton = styled.button`
-margin-right: 16px;
-width: 44px;
-height: 44px;
-display: flex;
-align-items: center;
-justify-content:center;
-border-radius: 50%;
-border: 2px solid white;
-background-color: rgba(0, 0, 0, 0.6);
-cursor: pointer;
+  margin-right: 16px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
 
-span{
+  span {
     font-size: 30px;
     color: white;
-}
-`
+  }
+`;
 
 const GroupWatchButton = styled(AddButton)`
-background: rgb(0, 0, 0);
-`
+  background: rgb(0, 0, 0);
+`;
 
 const SubTitle = styled.div`
-color: rgb(249, 249, 249);
-font-size: 15px;
-margin-top: 26px;
-min-height: 20px;
-`
-
+  color: rgb(249, 249, 249);
+  font-size: 15px;
+  margin-top: 26px;
+  min-height: 20px;
+`;
 
 const Description = styled.div`
-line-height: 1.4;
-font-size: 20px;
-margin-top:16px;
-color: rgb(249, 249, 249);
-max-width: 760px;
-`
-
+  line-height: 1.4;
+  font-size: 20px;
+  margin-top: 16px;
+  color: rgb(249, 249, 249);
+  max-width: 760px;
+  text-align: justify;
+`;

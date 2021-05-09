@@ -1,37 +1,100 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { auth, provider } from "../firebase";
 import styled from "styled-components";
+import {
+  selectUserName,
+  selectUserPhoto,
+  setUserLogin,
+  setSignOut,
+} from "../features/user/userSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { useHistory, Link } from "react-router-dom";
 
 const Header = () => {
+  const dispatch = useDispatch();
+  const userName = useSelector(selectUserName);
+  const userPhoto = useSelector(selectUserPhoto);
+  const history = useHistory();
+
+  const signIn = () => {
+    auth.signInWithPopup(provider).then((result) => {
+      let user = result.user;
+      dispatch(
+        setUserLogin({
+          name: user.displayName,
+          email: user.email,
+          photo: user.photoURL,
+        })
+      );
+      //console.log(result);
+      history.push("/");
+    });
+  };
+
+  useEffect(() => {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        dispatch(
+          setUserLogin({
+            name: user.displayName,
+            email: user.email,
+            photo: user.photoURL,
+          })
+        );
+        //console.log(result);
+        history.push("/");
+      }
+    });
+  }, []);
+
+  const signOut = () => {
+    auth.signOut().then((result) => {
+      dispatch(setSignOut());
+      history.push("/login");
+    });
+  };
+
   return (
     <Nav>
-      <Logo src="/images/logo.svg" />
-      <NavMenu>
-        <a href="#">
-          <img src="/images/home-icon.svg" alt="homeIcon" />
-          <span>HOME</span>
-        </a>
-        <a href="#">
-          <img src="/images/search-icon.svg" alt="searchIcon" />
-          <span>SEARCH</span>
-        </a>
-        <a href="#">
-          <img src="/images/watchlist-icon.svg" alt="watchlisIcon" />
-          <span>WATCHLIST</span>
-        </a>
-        <a href="#">
-          <img src="/images/original-icon.svg" alt="originalsIcon" />
-          <span>ORIGINALS</span>
-        </a>
-        <a href="#">
-          <img src="/images/movie-icon.svg" alt="movieIcon" />
-          <span>MOVIES</span>
-        </a>
-        <a href="#">
-          <img src="/images/series-icon.svg" alt="seriesIcon" />
-          <span>SERIES</span>
-        </a>
-      </NavMenu>
-      <UserImg src="https://images.unsplash.com/photo-1528426001684-1f1113c444c7?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTl8fHBlcnNvbiUyMGxhZHl8ZW58MHwyfDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"/>
+      <Link to="/">
+        <Logo src="/images/logo.svg" />
+      </Link>
+
+      {!userName ? (
+        <LoginContainer>
+          <Login onClick={signIn}>Login</Login>
+        </LoginContainer>
+      ) : (
+        <>
+          <NavMenu>
+            <a href="#">
+              <img src="/images/home-icon.svg" alt="homeIcon" />
+              <span>HOME</span>
+            </a>
+            <a href="#">
+              <img src="/images/search-icon.svg" alt="searchIcon" />
+              <span>SEARCH</span>
+            </a>
+            <a href="#">
+              <img src="/images/watchlist-icon.svg" alt="watchlisIcon" />
+              <span>WATCHLIST</span>
+            </a>
+            <a href="#">
+              <img src="/images/original-icon.svg" alt="originalsIcon" />
+              <span>ORIGINALS</span>
+            </a>
+            <a href="#">
+              <img src="/images/movie-icon.svg" alt="movieIcon" />
+              <span>MOVIES</span>
+            </a>
+            <a href="#">
+              <img src="/images/series-icon.svg" alt="seriesIcon" />
+              <span>SERIES</span>
+            </a>
+          </NavMenu>
+          <UserImg onClick={signOut} src={userPhoto} />
+        </>
+      )}
     </Nav>
   );
 };
@@ -75,31 +138,54 @@ const NavMenu = styled.div`
       position: relative;
 
       &:after {
-          content: "";
-          height: 2px;
-          background: white;
-          position: absolute;
-          left: 0;
-          right: 0;
-          bottom: -6px;
-          opacity: 0;
-          transform-origin: left center;
-          transform: scaleX(0);
-          transition: all 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s;
+        content: "";
+        height: 2px;
+        background: white;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -6px;
+        opacity: 0;
+        transform-origin: left center;
+        transform: scaleX(0);
+        transition: all 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s;
       }
     }
-    &:hover{
-        span:after{
-            transform: scaleX(1);
-            opacity: 1;
-        }
+    &:hover {
+      span:after {
+        transform: scaleX(1);
+        opacity: 1;
+      }
     }
   }
 `;
 
 const UserImg = styled.img`
-width: 48px;
-height: 48px;
-border-radius: 50%;
-cursor: pointer;
-`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+`;
+
+const Login = styled.div`
+  border: 1px solid #f9f9f9;
+  padding: 8px 16px;
+  border-radius: 4px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.6);
+  transition: all 0.2s ease 0s;
+
+  &:hover {
+    background-color: #f9f9f9;
+    color: #000;
+    border-color: transparent;
+  }
+`;
+
+const LoginContainer = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+`;
