@@ -1,3 +1,12 @@
+This the clone of Disney online platform which is being made using <h3>ReactJs</h3> in frontend and <h3>Firebase</h3> for backend.
+
+Firebase Login is used to keep the user logged inside the app.
+
+
+
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
 ## Available Scripts
